@@ -6,7 +6,10 @@ div#unityContainer{
     aspect-ratio: 16/9;
     height: auto!important;
     max-width:1200px;
-    display: flex;
+    
+}
+div#canvas{
+display: flex;
   justify-content: center;
 }
 .webgl-content.custom-webgl-content .fullscreen{
