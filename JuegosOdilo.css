@@ -5,7 +5,8 @@
 div#unityContainer{
     aspect-ratio: 16 / 9;
     height: auto !important;
-    max-width: 1600px;*/ /* Tamaño máximo en modo normal */
+     width: 960px; /* O cualquier otro tamaño */
+    height: 600px;
     margin: 0 auto; /* Centrar el contenedor */
     
 }
