@@ -1,7 +1,7 @@
-/*.webgl-content.custom-webgl-content{
+.webgl-content.custom-webgl-content{
     width: 100%;
     position: relative;
-}*/
+}
 div#unityContainer{
     aspect-ratio: 16 / 9;
     height: auto !important;
