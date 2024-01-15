@@ -1,0 +1,49 @@
+.webgl-content.custom-webgl-content{
+    width: 100%;
+    height: auto;
+    position: relative;
+}
+div#unityContainer{
+    aspect-ratio: 16/9;
+    height: auto!important;
+}
+.webgl-content.custom-webgl-content .fullscreen{
+  position: absolute;
+  bottom: -28px;
+  right: 0;
+  height: 32px;
+  width: 170px;
+  background-image: url('https://storage.googleapis.com/happylearning-tv.appspot.com/resources/games/imgs/pantallacompleta_happy.png');
+  background-size: cover;
+  cursor: pointer;
+  display: none;
+}
+.webgl-content.custom-webgl-content .fullscreen.eng{
+  background-image: url('https://storage.googleapis.com/happylearning-tv.appspot.com/resources/games/imgs/fullscreen_happy.png');
+  height: 32px;
+  width: 132px;
+}
+#webgl-content:fullscreen{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#webgl-content:fullscreen #unityContainer{
+    aspect-ratio: 16/9;
+    height: auto!important;
+}
+#botonPantalla.fullscreen{
+  display:none;
+}
+@media (orientation: landscape) {
+  #webgl-content:fullscreen #unityContainer{
+    height: 100%!important;
+    width: auto!important;
+  }
+}
+@media (orientation: portrait) {
+  #webgl-content:fullscreen #unityContainer{
+    width: 100%!important;
+    height: auto!important;
+  }
+}
