@@ -32,6 +32,7 @@ display: flex;
   display: flex;
   align-items: center;
   justify-content: center;
+    max-width:1200px;
 }
 #webgl-content:fullscreen #unityContainer{
     aspect-ratio: 16/9;
