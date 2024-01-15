@@ -48,11 +48,13 @@ display: flex;
   #webgl-content:fullscreen #unityContainer{
     height: 100%!important;
     width: auto!important;
+       max-width: none; /* Remueve el límite de ancho máximo en pantalla completa */
   }
 }
 @media (orientation: portrait) {
   #webgl-content:fullscreen #unityContainer{
     width: 100%!important;
     height: auto!important;
+       max-width: none; /* Remueve el límite de ancho máximo en pantalla completa */
   }
 }
