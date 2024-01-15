@@ -37,7 +37,6 @@ display: flex;
 #webgl-content:fullscreen #unityContainer{
     aspect-ratio: 16/9;
     height: auto!important;
- max-width:2600px;
 }
 #botonPantalla.fullscreen{
   display:none;
