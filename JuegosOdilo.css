@@ -8,6 +8,7 @@
 div#unityContainer{
     aspect-ratio: 16/9;
     height: auto!important;
+max-width:1200px;
 }
 .webgl-content.custom-webgl-content .fullscreen{
   position: absolute;
