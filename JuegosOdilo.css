@@ -3,9 +3,10 @@
     position: relative;
 }
 div#unityContainer{
-    aspect-ratio: 16/9;
-    height: auto!important;
-    max-width:1200px;
+    aspect-ratio: 16 / 9;
+    height: auto !important;
+    max-width: 1200px; /* Tamaño máximo en modo normal */
+    margin: 0 auto; /* Centrar el contenedor */
     
 }
 div#canvas{
@@ -35,8 +36,10 @@ display: flex;
    
 }
 #webgl-content:fullscreen #unityContainer{
-    aspect-ratio: 16/9;
-    height: auto!important;
+    /*aspect-ratio: 16/9;*/
+    width: 100% !important;
+    height: auto !important;
+    max-width: none; /* Remueve el límite de ancho máximo en pantalla completa */
 }
 #botonPantalla.fullscreen{
   display:none;
