@@ -1,14 +1,13 @@
 .webgl-content.custom-webgl-content{
     width: 100%;
     position: relative;
-    max-width:1200px;
-    display: flex;
-  justify-content: center;
 }
 div#unityContainer{
     aspect-ratio: 16/9;
     height: auto!important;
-max-width:1200px;
+    max-width:1200px;
+    display: flex;
+  justify-content: center;
 }
 .webgl-content.custom-webgl-content .fullscreen{
   position: absolute;
