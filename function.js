@@ -1,16 +1,29 @@
-// Definir la función para llamar a sendEmailToUnity
+var sceneLoaded = false;
+var unityReadyCallbacks = [];
+
+window.unitySceneLoaded = function() {
+    console.log("La escena de Unity está cargada y lista.");
+    sceneLoaded = true;
+    unityReadyCallbacks.forEach(callback => callback());
+    unityReadyCallbacks = [];
+};
+
+// Pasar los datos del email
 function callSendEmailToUnity() {
     var email = "usuario@example.com";
     sendEmailToUnity(email);
 }
+
 function sendEmailToUnity(email) {
-    if (sceneLoaded) {unityInstance.SendMessage('DataReceiver', 'ReceiveEmail', email);
-      } else {
+    if (sceneLoaded) {
+        unityInstance.SendMessage('DataReceiver', 'ReceiveEmail', email);
+    } else {
         console.error("La instancia de Unity no está disponible.");
         unityReadyCallbacks.push(() => sendEmailToUnity(email));
-      }
     }
-// Verificar si la variable sceneLoaded existe y es verdadera
+}
+
+// Verificar si la escena está cargada y lista
 if (typeof sceneLoaded !== 'undefined' && sceneLoaded) {
     // La variable existe y es verdadera
     callSendEmailToUnity();
@@ -27,3 +40,4 @@ if (typeof sceneLoaded !== 'undefined' && sceneLoaded) {
         console.error("La variable sceneLoaded no está definida.");
     }
 }
+
