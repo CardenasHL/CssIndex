@@ -3,6 +3,13 @@ function callSendEmailToUnity() {
     var email = "usuario@example.com";
     sendEmailToUnity(email);
 }
+function sendEmailToUnity(email) {
+    if (sceneLoaded) {unityInstance.SendMessage('DataReceiver', 'ReceiveEmail', email);
+      } else {
+        console.error("La instancia de Unity no está disponible.");
+        unityReadyCallbacks.push(() => sendEmailToUnity(email));
+      }
+    }
 // Verificar si la variable sceneLoaded existe y es verdadera
 if (typeof sceneLoaded !== 'undefined' && sceneLoaded) {
     // La variable existe y es verdadera
