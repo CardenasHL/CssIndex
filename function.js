@@ -13,11 +13,25 @@ function callSendEmailToUnity() {
     var email = "usuario@example.com";
     sendEmailToUnity(email);
 }
+function callSendIDToUnity() {
+    var userID = "5"
+    sendIDToUnity(userID);
+}
+function sendIDToUnity(userID){
+    if (sceneLoaded) {
+        unityInstance.SendMessage('DataReceiver', 'ReceiveUserID', userID);
+    } 
+    else {
+        console.error("La instancia de Unity no está disponible.");
+        unityReadyCallbacks.push(() => sendIDToUnity(email));
+    }
+}
 
 function sendEmailToUnity(email) {
     if (sceneLoaded) {
         unityInstance.SendMessage('DataReceiver', 'ReceiveEmail', email);
-    } else {
+    } 
+    else {
         console.error("La instancia de Unity no está disponible.");
         unityReadyCallbacks.push(() => sendEmailToUnity(email));
     }
@@ -27,6 +41,7 @@ function sendEmailToUnity(email) {
 if (typeof sceneLoaded !== 'undefined' && sceneLoaded) {
     // La variable existe y es verdadera
     callSendEmailToUnity();
+    callSendIDToUnity();
 } else {
     // La variable no existe o es falsa
     console.error("Unity aún no está listo. Esperando a que esté listo...");
