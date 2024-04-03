@@ -50,6 +50,7 @@ if (typeof sceneLoaded !== 'undefined' && sceneLoaded) {
     if (typeof sceneLoaded !== 'undefined') {
         // La variable existe pero es falsa, agregar a unityReadyCallbacks
         unityReadyCallbacks.push(callSendEmailToUnity);
+        unityReadyCallbacks.push(callSendIDToUnity);
     } else {
         // La variable no existe, imprime un mensaje en la consola
         console.error("La variable sceneLoaded no está definida.");
