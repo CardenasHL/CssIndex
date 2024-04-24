@@ -10,6 +10,8 @@ window.unitySceneLoaded = function() {
 window.unityDataReceived = function(jsonData) {
     console.log("Información recibida",jsonData);
     window.dispatchEvent(new CustomEvent('UnityData', { detail: jsonData }));
+    parent.postMessage("TEST info","*");
+    parent.postMessage(jsonData,"*");
     parent.document.dispatchEvent(new CustomEvent('UnityData', { detail: jsonData }));
 };
 
