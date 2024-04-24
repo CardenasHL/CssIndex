@@ -12,7 +12,7 @@ window.unityDataReceived = function(jsonData) {
     window.dispatchEvent(new CustomEvent('UnityData', { detail: jsonData }));
     parent.postMessage("TEST info","*");
     parent.postMessage(jsonData,"*");
-    parent.document.dispatchEvent(new CustomEvent('UnityData', { detail: jsonData }));
+    //parent.document.dispatchEvent(new CustomEvent('UnityData', { detail: jsonData }));
 };
 
 // Pasar los datos del email
