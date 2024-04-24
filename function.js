@@ -7,6 +7,9 @@ window.unitySceneLoaded = function() {
     unityReadyCallbacks.forEach(callback => callback());
     unityReadyCallbacks = [];
 };
+window.unityDataReceived = function(jsonData) {
+    console.log("Información recibida",jsonData);
+};
 
 // Pasar los datos del email
 function callSendEmailToUnity() {
