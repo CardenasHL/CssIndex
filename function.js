@@ -63,4 +63,16 @@ if (typeof sceneLoaded !== 'undefined' && sceneLoaded) {
         console.error("La variable sceneLoaded no está definida.");
     }
 }
-
+//Funciones de audio
+function ToggleMute() {
+            unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMute');
+        }
+function ToggleMuteBackground() {
+            unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMuteBackground');
+        }   
+function ToggleMuteSFX() {
+            unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMuteSFX');
+        }     
+function updateVolume(volume) {
+      unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolume', volume);
+        }
