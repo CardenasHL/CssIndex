@@ -71,6 +71,7 @@ if (typeof sceneLoaded !== 'undefined' && sceneLoaded) {
 //Funciones de audio
 function callSetVolumeBackground(){
     setVolumeBackground(0);
+    console.log("Llama a la función de setVolumeBackground);
 }
 function callSetVolumeSFX(){
     setVolumeSFX(-12);
@@ -90,7 +91,14 @@ function updateVolume(volume) {
       unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolume', volume);
         }
 function setVolumeBackground(volume) {
-      unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolumeBackground', volume);
+      
+    if (sceneLoaded) {
+        unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolumeBackground', volume);
+    } 
+    else {
+        console.error("La instancia de Unity no está disponible.");
+        unityReadyCallbacks.push(() => setVolumeBackground(volume));
+    }
         }
 function setVolumeSFX(volume) {
       unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolumeSFX', volume);
