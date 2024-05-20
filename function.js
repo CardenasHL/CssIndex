@@ -71,7 +71,7 @@ if (typeof sceneLoaded !== 'undefined' && sceneLoaded) {
 //Funciones de audio
 function callSetVolumeBackground(){
     setVolumeBackground(0);
-    console.log("Llama a la función de setVolumeBackground);
+    console.log("Llama a la función de setVolumeBackground");
 }
 function callSetVolumeSFX(){
     setVolumeSFX(-12);
