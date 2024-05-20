@@ -49,6 +49,9 @@ if (typeof sceneLoaded !== 'undefined' && sceneLoaded) {
     // La variable existe y es verdadera
     callSendEmailToUnity();
     callSendIDToUnity();
+    callSetVolumeBackground();
+    callSetVolumeSFX();
+    
 } else {
     // La variable no existe o es falsa
     console.error("Unity aún no está listo. Esperando a que esté listo...");
@@ -58,12 +61,22 @@ if (typeof sceneLoaded !== 'undefined' && sceneLoaded) {
         // La variable existe pero es falsa, agregar a unityReadyCallbacks
         unityReadyCallbacks.push(callSendEmailToUnity);
         unityReadyCallbacks.push(callSendIDToUnity);
+        unityReadyCallbacks.push(callSetVolumeBackground);
+        unityReadyCallbacks.push(callSetVolumeSFX);
     } else {
         // La variable no existe, imprime un mensaje en la consola
         console.error("La variable sceneLoaded no está definida.");
     }
 }
 //Funciones de audio
+function callSetVolumeBackground(){
+    setVolumeBackground(-24);
+}
+function callSetVolumeSFX(){
+    setVolumeSFX(-12);
+}
+
+
 function ToggleMute() {
             unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMute');
         }
@@ -76,3 +89,11 @@ function ToggleMuteSFX() {
 function updateVolume(volume) {
       unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolume', volume);
         }
+function setVolumeBackground(volume) {
+      unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolumeBackground', volume);
+        }
+function setVolumeSFX(volume) {
+      unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolumeSFX', volume);
+        }
+
+
