@@ -1,107 +1,172 @@
-var sceneLoaded = false;
-var unityReadyCallbacks = [];
+document.addEventListener('DOMContentLoaded', function() {
+    var sceneLoaded = false;
+    var unityReadyCallbacks = [];
+    var volumeBackground = '-24';
+    var volumeSFX = '-12';
 
-window.unitySceneLoaded = function() {
-    console.log("La escena de Unity está cargada y lista.");
-    sceneLoaded = true;
-    unityReadyCallbacks.forEach(callback => callback());
-    unityReadyCallbacks = [];
-};
-window.unityDataReceived = function(jsonData) {
-    console.log("Información recibida",jsonData);
-    window.dispatchEvent(new CustomEvent('UnityData', { detail: jsonData }));
-    parent.postMessage("TEST info","*");
-    parent.postMessage(jsonData,"*");
-    //parent.document.dispatchEvent(new CustomEvent('UnityData', { detail: jsonData }));
-};
+    window.unitySceneLoaded = function() {
+        sceneLoaded = true;
+        unityReadyCallbacks.forEach(callback => callback());
+        unityReadyCallbacks = [];
+    };
 
-// Pasar los datos del email
-function callSendEmailToUnity() {
-    var email = "usuario@example.com";
-    sendEmailToUnity(email);
-}
-function callSendIDToUnity() {
-    var userID = "5"
-    sendIDToUnity(userID);
-}
-function sendIDToUnity(userID){
-    if (sceneLoaded) {
-        unityInstance.SendMessage('DataReceiver', 'ReceiveUserID', userID);
-    } 
-    else {
-        console.error("La instancia de Unity no está disponible.");
-        unityReadyCallbacks.push(() => sendIDToUnity(email));
-    }
-}
+    window.unityDataReceived = function(jsonData) {
+        console.log("Información recibida", jsonData);
+        window.dispatchEvent(new CustomEvent('UnityData', { detail: jsonData }));
+        parent.postMessage("TEST info", "*");
+        parent.postMessage(jsonData, "*");
+    };
 
-function sendEmailToUnity(email) {
-    if (sceneLoaded) {
-        unityInstance.SendMessage('DataReceiver', 'ReceiveEmail', email);
-    } 
-    else {
-        console.error("La instancia de Unity no está disponible.");
-        unityReadyCallbacks.push(() => sendEmailToUnity(email));
-    }
-}
-
-// Verificar si la escena está cargada y lista
-if (typeof sceneLoaded !== 'undefined' && sceneLoaded) {
-    // La variable existe y es verdadera
-    callSendEmailToUnity();
-    callSendIDToUnity();
-    callSetVolumeBackground();
-    callSetVolumeSFX();
-    
-} else {
-    // La variable no existe o es falsa
-    console.error("Unity aún no está listo. Esperando a que esté listo...");
-
-    // Verificar si la variable existe
-    if (typeof sceneLoaded !== 'undefined') {
-        // La variable existe pero es falsa, agregar a unityReadyCallbacks
-        unityReadyCallbacks.push(callSendEmailToUnity);
-        unityReadyCallbacks.push(callSendIDToUnity);
-        unityReadyCallbacks.push(callSetVolumeBackground);
-        unityReadyCallbacks.push(callSetVolumeSFX);
+    // Llamada de funciones al detectar escena cargada
+    if (typeof sceneLoaded !== 'undefined' && sceneLoaded) {
+        callSetVolumeBackground();
+        callSetVolumeSFX();
     } else {
-        // La variable no existe, imprime un mensaje en la consola
-        console.error("La variable sceneLoaded no está definida.");
+        console.warn("Unity aún no está listo. Esperando a que esté listo...");
+
+        if (typeof sceneLoaded !== 'undefined') {
+            unityReadyCallbacks.push(callSetVolumeBackground);
+            unityReadyCallbacks.push(callSetVolumeSFX);
+        } else {
+            console.error("La variable sceneLoaded no está definida.");
+        }
     }
-}
-//Funciones de audio
-function callSetVolumeBackground(){
-    setVolumeBackground(0);
-    console.log("Llama a la función de setVolumeBackground");
-}
-function callSetVolumeSFX(){
-    setVolumeSFX(-12);
-}
 
-
-function ToggleMute() {
-            unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMute');
-        }
-function ToggleMuteBackground() {
-            unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMuteBackground');
-        }   
-function ToggleMuteSFX() {
-            unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMuteSFX');
-        }     
-function updateVolume(volume) {
-      unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolume', volume);
-        }
-function setVolumeBackground(volume) {
-      
-    if (sceneLoaded) {
-        unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolumeBackground', volume);
-    } 
-    else {
-        console.error("La instancia de Unity no está disponible.");
-        unityReadyCallbacks.push(() => setVolumeBackground(volume));
+    // FUNCIONES DE AUDIO
+    function callSetVolumeBackground() {
+        setVolumeBackground(volumeBackground);
     }
-        }
-function setVolumeSFX(volume) {
-      unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolumeSFX', volume);
-        }
 
+    function setVolumeBackground(volume) {
+        if (sceneLoaded) {
+            try {
+                unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolumeBackground', volume);
+            } catch (error) {
+                console.log("No tiene asignado nuevo sistema MusicController");
+            }
+        } else {
+            console.error("La instancia de Unity no está disponible.");
+            unityReadyCallbacks.push(() => setVolumeBackground(volume));
+        }
+    }
 
+    function callSetVolumeSFX() {
+        setVolumeSFX(volumeSFX);
+    }
+
+    function setVolumeSFX(volume) {
+        if (sceneLoaded) {
+            try {
+                unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolumeSFX', volume);
+            } catch (error) {
+                console.log("No tiene asignado nuevo sistema MusicController");
+            }
+        } else {
+            console.error("La instancia de Unity no está disponible.");
+            unityReadyCallbacks.push(() => setVolumeSFX(volume));
+        }
+    }
+
+    function ToggleMute() {
+        unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMute');
+    }
+
+    function ToggleMuteBackground() {
+        unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMuteBackground');
+    }
+
+    function ToggleMuteSFX() {
+        unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMuteSFX');
+    }
+
+    function updateVolume(volume) {
+        unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolume', volume);
+    }
+
+    // Crear contenedor de botones
+    var buttonContainer = document.createElement('div');
+    buttonContainer.id = 'button-container';
+    document.body.appendChild(buttonContainer);
+
+    // Botón para toggle mute general
+    var toggleButton = document.createElement('button');
+    toggleButton.innerHTML = 'Toggle Mute All';
+    toggleButton.style.backgroundColor = '#4CAF50'; // Color verde
+    toggleButton.style.color = 'white';
+    toggleButton.style.border = '1 px solid #000';
+    toggleButton.style.padding = '10px 20px';
+    toggleButton.style.marginRight = '10px';
+    toggleButton.style.cursor = 'pointer';
+    buttonContainer.appendChild(toggleButton);
+
+    // Estado inicial del botón (no muteado)
+    var isMuted = false;
+
+    // Añadir un evento al botón toggle
+    toggleButton.addEventListener('click', function() {
+        isMuted = !isMuted; // Alternar el estado muteado
+
+        if (isMuted) {
+            toggleButton.style.backgroundColor = '#f44336'; // Color rojo
+            ToggleMute();
+        } else {
+            toggleButton.style.backgroundColor = '#4CAF50'; // Color verde
+            ToggleMute();
+        }
+    });
+
+    // Botón para toggle mute background
+    var toggleButtonBackground = document.createElement('button');
+    toggleButtonBackground.innerHTML = 'Toggle Mute Background';
+    toggleButtonBackground.style.backgroundColor = '#4CAF50'; // Color verde
+    toggleButtonBackground.style.color = 'white';
+    toggleButtonBackground.style.border = '1 px solid #000';
+    toggleButtonBackground.style.padding = '10px 20px';
+    toggleButtonBackground.style.cursor = 'pointer';
+    toggleButtonBackground.style.marginRight = '10px';
+    buttonContainer.appendChild(toggleButtonBackground);
+
+    // Estado inicial del botón (no muteado)
+    var isMutedBackground = false;
+
+    // Añadir un evento al botón toggle background
+    toggleButtonBackground.addEventListener('click', function() {
+        isMutedBackground = !isMutedBackground; // Alternar el estado muteado
+
+        if (isMutedBackground) {
+            toggleButtonBackground.style.backgroundColor = '#f44336'; // Color rojo
+            ToggleMuteBackground();
+        } else {
+            toggleButtonBackground.style.backgroundColor = '#4CAF50'; // Color verde
+            ToggleMuteBackground();
+        }
+    });
+
+    // Botón para toggle mute SFX
+    var toggleButtonSFX = document.createElement('button');
+    toggleButtonSFX.innerHTML = 'Toggle Mute SFX';
+    toggleButtonSFX.style.backgroundColor = '#4CAF50'; // Color verde
+    toggleButtonSFX.style.color = 'white';
+    toggleButtonSFX.style.border = '1 px solid #000';
+    toggleButtonSFX.style.padding = '10px 20px';
+    toggleButtonSFX.style.marginRight = '10px';
+    toggleButtonSFX.style.cursor = 'pointer';
+    buttonContainer.appendChild(toggleButtonSFX);
+
+    // Estado inicial del botón (no muteado)
+    var isMutedSFX = false;
+
+    // Añadir un evento al botón toggle SFX
+    toggleButtonSFX.addEventListener('click', function() {
+        isMutedSFX = !isMutedSFX; // Alternar el estado muteado
+
+        if (isMutedSFX) {
+            toggleButtonSFX.style.backgroundColor = '#f44336'; // Color rojo
+            ToggleMuteSFX();
+        } else {
+            toggleButtonSFX.style.backgroundColor = '#4CAF50'; // Color verde
+            ToggleMuteSFX();
+        }
+    });
+
+});
