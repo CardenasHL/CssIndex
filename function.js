@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+    const LIMIT_SIZE = 1024;
     var sceneLoaded = false;
     var unityReadyCallbacks = [];
     var volumeBackground = '-24';
@@ -9,8 +10,9 @@ document.addEventListener('DOMContentLoaded', function() {
         unityReadyCallbacks.forEach(callback => callback());
         unityReadyCallbacks = [];
     };
-    // Llamar a funciones cuando se detecta la escena cargada, ajuste de los volumenes background y sfx
-    if (typeof sceneLoaded !== 'undefined' && sceneLoaded) {
+
+    // Llamar a funciones cuando se detecta la escena cargada, ajuste de los volúmenes background y sfx
+    if (sceneLoaded) {
         callSetVolumeBackground();
         callSetVolumeSFX();
     } else {
@@ -22,18 +24,21 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error("La variable sceneLoaded no está definida.");
         }
     }
-    //Función que recibe el json desde unity
+
+    // Función que recibe el json desde Unity
     window.unityDataReceived = function(jsonData) {
         console.log("Json recibido", jsonData);
         window.dispatchEvent(new CustomEvent('UnityData', { detail: jsonData }));
         parent.postMessage("TEST info", "*");
         parent.postMessage(jsonData, "*");
     };
+
     // FUNCIONES DE AUDIO
     function callSetVolumeBackground() {
         setVolumeBackground(volumeBackground);
     }
-    //Ajustar el volumen de la música de fondo.
+
+    // Ajustar el volumen de la música de fondo.
     function setVolumeBackground(volume) {
         if (sceneLoaded) {
             try {
@@ -46,10 +51,12 @@ document.addEventListener('DOMContentLoaded', function() {
             unityReadyCallbacks.push(() => setVolumeBackground(volume));
         }
     }
+
     function callSetVolumeSFX() {
         setVolumeSFX(volumeSFX);
     }
-    //Ajustar el volumen de la música de fondo
+
+    // Ajustar el volumen de los efectos de sonido (SFX)
     function setVolumeSFX(volume) {
         if (sceneLoaded) {
             try {
@@ -62,7 +69,8 @@ document.addEventListener('DOMContentLoaded', function() {
             unityReadyCallbacks.push(() => setVolumeSFX(volume));
         }
     }
-    //De estas funciones en principio vamos a usar solo ToggleMute, sería interesante conservar todas por si cambiamos de opinión en el futuro.
+
+    // Funciones de muteo
     function ToggleMute() {
         unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMute');
     }
@@ -74,4 +82,25 @@ document.addEventListener('DOMContentLoaded', function() {
     function ToggleMuteSFX() {
         unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMuteSFX');
     }
+
+    // Función para pantalla completa
+    function full_screen() {
+        if (window.screen.width < LIMIT_SIZE) {
+            let player = document.getElementById('webgl-content');
+            if (player.requestFullscreen) {
+                player.requestFullscreen();
+            } else if (player.mozRequestFullScreen) {
+                player.mozRequestFullScreen(); // Firefox
+            } else if (player.webkitRequestFullscreen) {
+                player.webkitRequestFullscreen(); // Chrome and Safari
+            }
+
+            screen.orientation.lock("landscape")
+                .then(function() {})
+                .catch(function(error) {});
+        } else {
+            console.log("ordenadores");
+            document.getElementById('webgl-content').requestFullscreen();
+        }
+    } 
 });
