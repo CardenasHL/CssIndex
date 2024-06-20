@@ -1,25 +1,14 @@
-window.unityDataReceived = function(jsonData) {
-    console.log("Información recibida", jsonData);
-    parent.postMessage(jsonData, "*");
-};
-
-const LIMIT_SIZE = 1024;
-let sceneLoaded = false;
-let unityReadyCallbacks = [];
-let volumeBackground = '-24';
-let volumeSFX = '-12';
-
-document.addEventListener('DOMContentLoaded', function () {
-    if (navigator.appVersion.indexOf("Mac") !== -1 && window.screen.width < LIMIT_SIZE) {
-        document.querySelector('.fullscreen').style.display = "none";
-    }
+document.addEventListener('DOMContentLoaded', function() {
+    var sceneLoaded = false;
+    var unityReadyCallbacks = [];
+    var volumeBackground = '-24';
+    var volumeSFX = '-12';
 
     window.unitySceneLoaded = function() {
         sceneLoaded = true;
         unityReadyCallbacks.forEach(callback => callback());
         unityReadyCallbacks = [];
     };
-
     // Llamar a funciones cuando se detecta la escena cargada, ajuste de los volumenes background y sfx
     if (typeof sceneLoaded !== 'undefined' && sceneLoaded) {
         callSetVolumeBackground();
@@ -33,72 +22,56 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error("La variable sceneLoaded no está definida.");
         }
     }
+    //Función que recibe el json desde unity
+    window.unityDataReceived = function(jsonData) {
+        console.log("Json recibido", jsonData);
+        window.dispatchEvent(new CustomEvent('UnityData', { detail: jsonData }));
+        parent.postMessage("TEST info", "*");
+        parent.postMessage(jsonData, "*");
+    };
+    // FUNCIONES DE AUDIO
+    function callSetVolumeBackground() {
+        setVolumeBackground(volumeBackground);
+    }
+    //Ajustar el volumen de la música de fondo.
+    function setVolumeBackground(volume) {
+        if (sceneLoaded) {
+            try {
+                unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolumeBackground', volume);
+            } catch (error) {
+                console.log("No tiene asignado nuevo sistema MusicController");
+            }
+        } else {
+            console.error("La instancia de Unity no está disponible.");
+            unityReadyCallbacks.push(() => setVolumeBackground(volume));
+        }
+    }
+    function callSetVolumeSFX() {
+        setVolumeSFX(volumeSFX);
+    }
+    //Ajustar el volumen de la música de fondo
+    function setVolumeSFX(volume) {
+        if (sceneLoaded) {
+            try {
+                unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolumeSFX', volume);
+            } catch (error) {
+                console.log("No tiene asignado nuevo sistema MusicController");
+            }
+        } else {
+            console.error("La instancia de Unity no está disponible.");
+            unityReadyCallbacks.push(() => setVolumeSFX(volume));
+        }
+    }
+    //De estas funciones en principio vamos a usar solo ToggleMute, sería interesante conservar todas por si cambiamos de opinión en el futuro.
+    function ToggleMute() {
+        unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMute');
+    }
+
+    function ToggleMuteBackground() {
+        unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMuteBackground');
+    }
+
+    function ToggleMuteSFX() {
+        unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMuteSFX');
+    }
 });
-
-function full_screen() {
-    if (window.screen.width < LIMIT_SIZE) {
-        let player = document.getElementById('webgl-content');
-        if (player.requestFullscreen) {
-            document.getElementById('webgl-content').requestFullscreen();
-        } else if (player.mozRequestFullScreen) {
-            player.mozRequestFullScreen(); // Firefox
-        } else if (player.webkitRequestFullscreen) {
-            player.webkitRequestFullscreen(); // Chrome and Safari
-        }
-
-        screen.orientation.lock("landscape")
-        .then(function() {})
-        .catch(function(error) {});
-    } else {
-        console.log("ordenadores");
-        //unityInstance.SetFullscreen(1)
-        document.getElementById('webgl-content').requestFullscreen();
-    }
-}
-
-// FUNCIONES DE AUDIO
-function callSetVolumeBackground() {
-    setVolumeBackground(volumeBackground);
-}
-
-function setVolumeBackground(volume) {
-    if (sceneLoaded) {
-        try {
-            unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolumeBackground', volume);
-        } catch (error) {
-            console.log("No tiene asignado nuevo sistema MusicController");
-        }
-    } else {
-        console.error("La instancia de Unity no está disponible.");
-        unityReadyCallbacks.push(() => setVolumeBackground(volume));
-    }
-}
-
-function callSetVolumeSFX() {
-    setVolumeSFX(volumeSFX);
-}
-
-function setVolumeSFX(volume) {
-    if (sceneLoaded) {
-        try {
-            unityInstance.SendMessage('MusicControllerWebAPI', 'SetVolumeSFX', volume);
-        } catch (error) {
-            console.log("No tiene asignado nuevo sistema MusicController");
-        }
-    } else {
-        console.error("La instancia de Unity no está disponible.");
-        unityReadyCallbacks.push(() => setVolumeSFX(volume));
-    }
-}
-
-function ToggleMute() {
-    unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMute');
-}
-
-function ToggleMuteBackground() {
-    unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMuteBackground');
-}
-
-function ToggleMuteSFX() {
-    unityInstance.SendMessage('MusicControllerWebAPI', 'ToggleMuteSFX');
-}
